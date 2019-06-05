@@ -156,8 +156,8 @@ func (tail *Tail) readLast() {
 
 	pos, err := tail.file.Seek(seek.Offset, seek.Whence)
 
-	if err != nil {
-		fmt.Errorf("Seek error on %s: %s", tail.Filename, err)
+	if err != nil && err != io.EOF {
+		fmt.Printf("Seek error on %s: %s\n", tail.Filename, err)
 	}
 
 	pageSize := 4096
@@ -188,8 +188,8 @@ func (tail *Tail) readLast() {
 
 		_, err := tail.file.ReadAt(b, readFrom)
 
-		if err != nil {
-			fmt.Errorf("Read error on %s: %s", tail.Filename, err)
+		if err != nil && err != io.EOF {
+			fmt.Printf("Read error on %s: %s\n", tail.Filename, err)
 		}
 
 		i := 0
@@ -280,8 +280,8 @@ func (tail *Tail) skipLines() {
 		b := make([]byte, pageSize)
 
 		_, err := tail.file.ReadAt(b, pos)
-		if err != nil {
-			fmt.Errorf("Read error on %s: %s", tail.Filename, err)
+		if err != nil && err != io.EOF {
+			fmt.Printf("Read error on %s: %s\n", tail.Filename, err)
 		}
 
 		i := 0
